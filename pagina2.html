@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marginais Vivas • Futuro Sustentável</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+body{
+background:linear-gradient(180deg,#020617,#022c22);
+color:white;
+overflow-x:hidden;
+}
+
+header{
+height:80vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:40px;
+}
+
+header h1{
+font-size:clamp(3rem,6vw,5rem);
+background:linear-gradient(90deg,#22c55e,#4ade80,#22d3ee);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+header p{
+max-width:700px;
+margin-top:20px;
+opacity:.85;
+}
+
+nav{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(10px);
+padding:10px 25px;
+border-radius:40px;
+display:flex;
+gap:20px;
+}
+
+nav a{color:white;text-decoration:none;font-size:14px;opacity:.8}
+nav a:hover{opacity:1;color:#4ade80}
+
+section{padding:100px 8vw}
+
+.title{
+font-size:2.4rem;
+color:#4ade80;
+margin-bottom:40px;
+}
+
+.tech-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:30px;
+}
+
+.tech-card{
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.12);
+padding:30px;
+border-radius:18px;
+transition:.4s;
+}
+
+.tech-card:hover{
+transform:translateY(-10px);
+box-shadow:0 20px 50px rgba(0,0,0,0.5);
+}
+
+.tech-card h3{
+color:#4ade80;
+margin-bottom:10px;
+}
+
+.simulator{
+margin-top:60px;
+background:linear-gradient(135deg,#22c55e22,#06b6d422);
+padding:40px;
+border-radius:20px;
+}
+
+.simulator button{
+margin-top:20px;
+padding:12px 20px;
+border:none;
+border-radius:30px;
+background:#22c55e;
+color:#022c22;
+font-weight:600;
+cursor:pointer;
+}
+
+.result{
+margin-top:20px;
+font-size:18px;
+color:#a7f3d0;
+}
+
+.back{
+display:inline-block;
+margin-top:40px;
+padding:12px 20px;
+background:#4ade80;
+color:#022c22;
+border-radius:30px;
+text-decoration:none;
+font-weight:600;
+}
+
+footer{
+padding:40px;
+text-align:center;
+opacity:.6;
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+<a href="#tecnologias">Tecnologias</a>
+<a href="#simulador">Simulador</a>
+<a href="index.html">Página inicial</a>
+</nav>
+
+<header>
+<h1>O Futuro das Marginais</h1>
+<p>
+Nesta experiência exploramos tecnologias e ideias capazes de transformar marginais urbanas em ecossistemas inteligentes e sustentáveis.
+</p>
+</header>
+
+<section id="tecnologias">
+<h2 class="title">Tecnologias para Cidades Sustentáveis</h2>
+
+<div class="tech-grid">
+
+<div class="tech-card">
+<h3>Sensores Ambientais</h3>
+<p>Dispositivos inteligentes podem monitorar qualidade do ar, temperatura e poluição em tempo real.</p>
+</div>
+
+<div class="tech-card">
+<h3>Rios Inteligentes</h3>
+<p>Sistemas automatizados ajudam a detectar lixo e controlar a qualidade da água.</p>
+</div>
+
+<div class="tech-card">
+<h3>Energia Limpa</h3>
+<p>Painéis solares e iluminação inteligente podem alimentar estruturas urbanas com energia renovável.</p>
+</div>
+
+<div class="tech-card">
+<h3>Corredores Verdes</h3>
+<p>Grandes áreas arborizadas conectam parques e melhoram a biodiversidade urbana.</p>
+</div>
+
+</div>
+</section>
+
+<section id="simulador">
+<h2 class="title">Experiência Interativa • Revitalize a Marginal</h2>
+
+<div class="simulator">
+<p>
+Ajude a transformar a marginal em um ambiente sustentável. Clique para plantar árvores ao redor do rio. Quanto mais árvores você plantar, mais a poluição diminui e o rio se recupera.
+</p>
+
+<canvas id="game" width="900" height="420" style="width:100%;margin-top:25px;border-radius:14px;background:#021b1b"></canvas>
+
+<div style="margin-top:20px">
+<div style="font-size:14px;margin-bottom:6px">Recuperação ambiental</div>
+<div style="height:14px;background:#1f2937;border-radius:20px;overflow:hidden">
+<div id="progress" style="height:100%;width:0%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div>
+</div>
+</div>
+
+<div class="result" id="resultado">🌱 Comece plantando árvores no cenário.</div>
+
+<button onclick="reiniciar()">Reiniciar experiência</button>
+
+</div>
+</section>
+
+<script>
+
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+let trees = [];
+let cars = [];
+let pollution = 100;
+
+for(let i=0;i<6;i++){
+ cars.push({x:Math.random()*canvas.width,y:320+Math.random()*30,speed:1+Math.random()*2});
+}
+
+function drawScene(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+// céu
+ctx.fillStyle="#0ea5a5";
+ctx.fillRect(0,0,canvas.width,160);
+
+// cidade
+ctx.fillStyle="#334155";
+ctx.fillRect(0,160,canvas.width,70);
+
+// rio muda de cor conforme recuperação
+let riverHealth=Math.min(trees.length/40,1);
+let blue=120+riverHealth*100;
+ctx.fillStyle=`rgb(2,132,${blue})`;
+ctx.fillRect(0,230,canvas.width,70);
+
+// estrada
+ctx.fillStyle="#1f2937";
+ctx.fillRect(0,300,canvas.width,120);
+
+// carros
+for(const car of cars){
+ ctx.fillStyle="#e5e7eb";
+ ctx.fillRect(car.x,car.y,30,14);
+
+ ctx.fillStyle="rgba(120,120,120,0.4)";
+ ctx.beginPath();
+ ctx.arc(car.x-5,car.y+7,6,0,Math.PI*2);
+ ctx.fill();
+
+ car.x+=car.speed;
+ if(car.x>canvas.width+40) car.x=-40;
+}
+
+// árvores
+for(const t of trees){
+
+ ctx.fillStyle="#14532d";
+ ctx.fillRect(t.x-2,t.y,4,14);
+
+ ctx.fillStyle="#22c55e";
+ ctx.beginPath();
+ ctx.arc(t.x,t.y,10+t.size,0,Math.PI*2);
+ ctx.fill();
+
+ if(t.size<6) t.size+=0.02;
+}
+
+requestAnimationFrame(drawScene);
+}
+
+canvas.addEventListener('click',e=>{
+
+const rect=canvas.getBoundingClientRect();
+const x=e.clientX-rect.left;
+const y=e.clientY-rect.top;
+
+if(y>210 && y<300){
+ trees.push({x,y,size:0});
+ updateImpact();
+}
+
+});
+
+function updateImpact(){
+
+const count=trees.length;
+
+pollution=Math.max(100-count*1.5,20);
+
+let progress=Math.min(count*2.5,100);
+
+const bar=document.getElementById('progress');
+bar.style.width=progress+"%";
+
+const resultado=document.getElementById('resultado');
+
+resultado.innerHTML=`
+🌳 Árvores plantadas: <b>${count}</b><br>
+🌫 Poluição restante: <b>${pollution.toFixed(0)}%</b><br>
+🌊 Qualidade do rio: <b>${Math.min(progress,100).toFixed(0)}%</b>`;
+
+}
+
+function reiniciar(){
+ trees=[];
+ pollution=100;
+ document.getElementById('progress').style.width="0%";
+ document.getElementById('resultado').innerHTML="🌱 Comece plantando árvores no cenário.";
+}
+
+// iniciar animação
+
+drawScene();
+
+</script>
+
+<section style="text-align:center">
+<a class="back" href="index.html">← Voltar para a primeira experiência</a>
+</section>
+
+<footer>
+Experiência digital sobre sustentabilidade urbana • Continuação do projeto
+</footer>
+
+<script>
+
+function simular(){
+
+const resultado=document.getElementById('resultado')
+
+resultado.innerHTML="🌳 10.000 árvores poderiam reduzir até 30% da poluição do ar local e diminuir a temperatura média da região em cerca de 2°C.";
+
+}
+
+</script>
+
+</body>
+</html>
